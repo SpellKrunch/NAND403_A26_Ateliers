@@ -30,6 +30,8 @@ def read_file(my_file_name):
                liste_quality_full.append(j)
                if isinstance(k, int):
                    liste_item.append(str(k))
+               elif isinstance(k,float):
+                   liste_item.append(str(k))
                else: 
                    liste_item.append(k)
 
