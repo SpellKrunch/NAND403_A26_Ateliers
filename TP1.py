@@ -1,33 +1,54 @@
 import sys
 import json
 
-from PySide6.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMainWindow
+from PySide6.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMainWindow, QLabel, QLineEdit, QVBoxLayout, QMessageBox
 
 
-def verify_file(my_file_name):
-    try: 
-        json.loads(my_file_name)
-    except ValueError as e:
-        return False
-    return True
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Json File Reader")
+
+        error_message = QMessageBox()
+        error_message.setWindowTitle("Error Found")
+        error_message.setText("An error was found in the json folder")
+        error_message.setText("Please try again")
 
 
-def read_file(my_file_name):
+    def verify_file(file_name):
 
-    liste_quality_full = []
-    liste_quality_trimmed = []
-    liste_duplicate = []
-    liste_item = []
-    seen = set()
-    app = QApplication(sys.argv)
+        error_message = QMessageBox()
+        error_message.setWindowTitle("Error Found")
+        error_message.setText("An error was found in the json folder")
+        error_message.setText("Please try again")
+
+        try:
+            with open(file_name, "r", encoding="utf-8") as folder:
+                      data = json.load(folder)
+        except json.JSONDecodeError:
+             error_message.exec()
+
+    def read_file(file_name):
+
+     liste_quality = []
+     liste_duplicate = []
+     liste_item = []
+     seen = set()
     
-
-    with open(my_file_name, "r", encoding="utf-8") as folder:
+    
+     # Open the json folder and iterate on its content, adding qualities to a list and items in another 
+     with open(file_name, "r", encoding="utf-8") as folder:
         data = json.load(folder)
 
         for i in data:
             for j , k in i.items():
-               liste_quality_full.append(j)
+               if j in seen:
+                   liste_duplicate.append(j)
+               else:
+                   seen.add(j)
+                   liste_quality.append(j)
+
                if isinstance(k, int):
                    liste_item.append(str(k))
                elif isinstance(k,float):
@@ -35,46 +56,62 @@ def read_file(my_file_name):
                else: 
                    liste_item.append(k)
 
-
-    for i in liste_quality_full:
+     '''
+     # getting rid of duplicate qualities in their list 
+     for i in liste_quality_full:
         if i in seen:
             liste_duplicate.append(i)
         else:
             seen.add(i)
             liste_quality_trimmed.append(i)
-   
-    
-    my_table = QTableWidget(((len(liste_item)/(len(liste_quality_trimmed)))),len(liste_quality_trimmed))
-    
-    my_table.setHorizontalHeaderLabels(liste_quality_trimmed)
+     '''
 
-    index = 0 
-    for i in range(len(liste_item)):
+     '''
+     layout = QVBoxLayout()
+     label_file_name = QLabel(file_name)
+     label_file_size = QLabel(str(sys.getsizeof(folder)))
+     label_file_amount = QLabel(str(len(liste_item)))
+     layout.addWidget(label_file_name)
+     layout.addWidget(label_file_size)
+     layout.addWidget(label_file_amount)
+     my_table.setLayout(layout)
+        
+     '''
+    
+     my_table = QTableWidget(((len(liste_item)/(len(liste_quality)))),len(liste_quality))
+    
+     my_table.setHorizontalHeaderLabels(liste_quality)
+
+     index = 0 
+     for i in range(len(liste_item)):
             my_table.setItem(index,i,QTableWidgetItem(liste_item[i]))
 
-        
-    my_table.show()
-
-    sys.exit(app.exec())
+                 
+     my_table.show()
+       
+            
+            
 
 
 if __name__ == "__main__":
 
-    #entry = False
+    entry = False
 
+    '''
+    while entry == False:
 
-    #while entry == False:
+        file_name = input("enter the full json file name : ")
 
-        #file_name = input("enter the full json file name : ")
-
-        #if verify_file(file_name) == False:
-            #print("An error has been found in the json folder")
-            #print("please try again")
-        #else: 
-            #entry == True
-    
+        if verify_file(file_name) == False:
+            print("Json Error")
+        else:
+            entry == True
+    '''
 
     file_name = input("enter the full json file name : ")
-    read_file(file_name)
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    MainWindow.read_file(file_name)
+    sys.exit(app.exec())
 
-
+    
