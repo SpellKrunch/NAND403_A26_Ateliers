@@ -6,13 +6,6 @@ from PySide6.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMai
 
 
 
-
-        
-
-
-
-
-
 def verify_file(file_name):
 
         error_message = QMessageBox()
@@ -31,6 +24,7 @@ def file_size(file_name):
 
      file_size_label = QLabel()
      file_size_label.setText(f"File Size : {os.path.getsize(file_name)} Byte")
+
 
      return file_size_label 
 
@@ -92,6 +86,7 @@ if __name__ == "__main__":
     window.setCentralWidget(central)
     central.setLayout(layout)
 
+    
     layout.addWidget(file_size(file_name))
     layout.addWidget(read_file(file_name))
 
