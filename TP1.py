@@ -2,17 +2,16 @@ import sys
 import os
 import json
 
-from PySide6.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMainWindow, QLabel, QLineEdit, QVBoxLayout, QMessageBox, QWidget
-
+from PySide6.QtWidgets import QApplication, QTableWidget, QTableView, QTableWidgetItem, QMainWindow, QLabel, QLineEdit, QVBoxLayout, QMessageBox, QWidget, QLineEdit, QPushButton
+from PyQt5.QtCore import Qt, QSortFilterProxyModel, QAbstractTableModel
 
 
 def verify_file(file_name):
 
         error_message = QMessageBox()
         error_message.setWindowTitle("Error Found")
-        error_message.setText("An error was found in the json folder")
-        error_message.setText("Please try again")
-
+        error_message.setText("An error was found in the json folder. Please try again")
+        
         try:
             with open(file_name, "r", encoding="utf-8") as folder:
                       data = json.load(folder)
@@ -28,19 +27,51 @@ def file_size(file_name):
 
      return file_size_label 
 
+def file_item_count(file_name):
 
-def file_research(table):
+     file_item_count_label = QLabel()
+     with open(file_name, "r", encoding="utf-8") as folder:
+             data = json.load(folder)
 
-     print("")
+     count = 0
+     for i in data:
+          for v in i.values():
+               count += 1
+
+     file_item_count_label.setText(f"Item Count : {count}")
+
+     return file_item_count_label
 
 
-def read_file(file_name):
+
+def search(text):
+     text = text.lower().strip()
+
+     for row in range(my_table.rowCount()):
+        match = False
+
+        for column in range(my_table.columnCount()):
+            item = my_table.item(row, column)
+
+            if item and text in item.text().lower():
+                match = True
+                break
+
+        my_table.setRowHidden(row, not match)
+
+
+if __name__ == "__main__":
 
     liste_quality = []
     liste_duplicate = []
     liste_item = []
     seen = set()
-    
+
+    app = QApplication(sys.argv)
+ 
+    file_name = input("enter the full json file name : ")
+         
+    verify_file(file_name)
     
     # Open the json folder and iterate on its content, adding qualities to a list and items in another 
     with open(file_name, "r", encoding="utf-8") as folder:
@@ -65,20 +96,17 @@ def read_file(file_name):
     
     my_table.setHorizontalHeaderLabels(liste_quality)
 
+
+    search_bar = QLineEdit()
+    search_bar.setPlaceholderText("Search...")
+    search_bar.textChanged.connect(search)
+
+    
     index = 0 
     for i in range(len(liste_item)):
         my_table.setItem(index,i,QTableWidgetItem(liste_item[i]))
 
-    return my_table
 
-
-       
-        
-if __name__ == "__main__":
-
-    file_name = input("enter the full json file name : ")
-    
-    app = QApplication(sys.argv)
 
     window = QMainWindow()
     layout = QVBoxLayout()
@@ -86,16 +114,15 @@ if __name__ == "__main__":
     window.setCentralWidget(central)
     central.setLayout(layout)
 
-    
-    layout.addWidget(file_size(file_name))
-    layout.addWidget(read_file(file_name))
 
-    # main window and show 
-    # central widget and asign it to window 
-    # layout and asign to central
-    # central.setLayout()
-    # asign widgets to layout 
-    #layout.addwidget
+    file_name_label = QLabel()
+    file_name_label.setText(f"File Name : {file_name}")
+
+    layout.addWidget(file_name_label)
+    layout.addWidget(file_size(file_name))
+    layout.addWidget(file_item_count(file_name))
+    layout.addWidget(search_bar)
+    layout.addWidget(my_table)
 
     window.show()
 
