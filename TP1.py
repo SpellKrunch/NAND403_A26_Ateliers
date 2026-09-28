@@ -2,7 +2,9 @@ import sys
 import os
 import json
 
-from PySide6.QtWidgets import QApplication, QTableWidget, QTableView, QTableWidgetItem, QMainWindow, QLabel, QLineEdit, QVBoxLayout, QMessageBox, QWidget, QLineEdit, QPushButton
+from PySide6.QtWidgets import QApplication, QTableWidget, QTableView, \
+QTableWidgetItem, QMainWindow, QLabel, QLineEdit, QVBoxLayout, QMessageBox, \
+QWidget, QLineEdit, QPushButton, QHBoxLayout
 from PyQt5.QtCore import Qt, QSortFilterProxyModel, QAbstractTableModel
 
 
@@ -14,9 +16,11 @@ def verify_file(file_name):
         
         try:
             with open(file_name, "r", encoding="utf-8") as folder:
-                      data = json.load(folder)
-        except json.JSONDecodeError:
+                      json.load(folder)
+            return True
+        except (json.JSONDecodeError, OSError):
              error_message.exec()
+             quit()
 
 
 def file_size(file_name):
@@ -60,6 +64,44 @@ def search(text):
         my_table.setRowHidden(row, not match)
 
 
+def sorting():
+     
+     reversed_state = False 
+
+     rows = []
+
+     row_count = my_table.rowCount()
+     column_count = my_table.columnCount()
+
+     for i in range(row_count):
+
+          row_data = []
+
+          for j in range(column_count):
+
+               item = my_table.item(i, j)
+               if item is not None:
+                    row_data.append(item.text())
+               else:
+                    row_data.append("")
+
+          rows.append(row_data)
+
+     reversed_state = not reversed_state
+
+     if reversed_state == True:
+          rows.reverse()
+     else:
+          rows.reverse()
+          
+
+     for x, row_data in enumerate(rows):
+
+          for y, z in enumerate(row_data):
+
+               my_table.setItem(x,y,QTableWidgetItem(z))
+          
+
 if __name__ == "__main__":
 
     liste_quality = []
@@ -68,11 +110,13 @@ if __name__ == "__main__":
     seen = set()
 
     app = QApplication(sys.argv)
- 
+
+
+
     file_name = input("enter the full json file name : ")
-         
-    verify_file(file_name)
-    
+
+    verify_file(file_name) 
+
     # Open the json folder and iterate on its content, adding qualities to a list and items in another 
     with open(file_name, "r", encoding="utf-8") as folder:
         data = json.load(folder)
@@ -101,6 +145,11 @@ if __name__ == "__main__":
     search_bar.setPlaceholderText("Search...")
     search_bar.textChanged.connect(search)
 
+    sorting_button = QPushButton("Sort Ascending/Descending")
+ 
+    sorting_button.clicked.connect(sorting)
+  
+
     
     index = 0 
     for i in range(len(liste_item)):
@@ -121,6 +170,7 @@ if __name__ == "__main__":
     layout.addWidget(file_name_label)
     layout.addWidget(file_size(file_name))
     layout.addWidget(file_item_count(file_name))
+    layout.addWidget(sorting_button)
     layout.addWidget(search_bar)
     layout.addWidget(my_table)
 
