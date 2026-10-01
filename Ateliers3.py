@@ -1,5 +1,5 @@
 
-from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout,QTextEdit,QPushButton
+from PySide6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout,QTextEdit,QPushButton, QMessageBox
 
 class MessageBoard(QWidget):
     def __init__(self):
@@ -10,16 +10,24 @@ class MessageBoard(QWidget):
     def create_ui(self):
         layout = QVBoxLayout(self)
         label = QLabel("Message Board")
-        text_input = QTextEdit()
+        text_input = QTextEdit("Enter message...")
+        button = QPushButton("Write Message")
+        button.clicked.connect(lambda: self.on_click(text_input.toPlainText()))
         
 
         layout.addWidget(label)
+        layout.addWidget(text_input)
+        layout.addWidget(button)
 
 
-    def on_click(self):
+    def on_click(self,message):
+        box_message = QMessageBox(self)
+        box_message.setText(message)
+
+        box_message.exec()
         
 
-
+    
 def main():
     global widget
 
