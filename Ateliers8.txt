@@ -1,0 +1,24 @@
+Guide d'implémentation de script dans Maya 
+
+1 - Aller sur n'importe quelle projet Maya 
+
+2 - Dans le coin en haut à gauche de la page cliquer sur l'engrenage et sélectionner : New Shelf 
+
+3 - Donner le nom que vous voulez à votre nouveau shelf
+
+4 - Si vous n'avez pas le script editor ouvert, aller dans l'onglet Windows, puis dans General Editor, puis sélectionné Script Editor
+
+5 - Sélectionner la totalité du code puis copier le code dans le script editor 
+
+6 - Sélectionner la totalité du code dans le script editor puis utiliser la molette de la souris afin de drag le code dans le shelf
+
+7 - Sélectionner avec le clic droit votre nouvel outil et sélectionné Edit 
+
+8 - Dans la section Icon Name, sélectionné d'icone de dossier et aller chercher le png nommé Atelier 7 icon
+
+9 - Il suffit maintenant de sélectionnner n'importe quelle géométrie dans la scène et d'appuyer ensuite sur l'outil. 
+
+10 - Voilà vous avez implémenter l'outils de l'atelier 7.
+
+
+NB : Émile à essayer cette documentation avec succès. 
